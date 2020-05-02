@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <!-- displays site properly based on user's device -->
+
+   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+   <link rel="stylesheet" href="https://fonts.google.com/specimen/Barlow+Semi+Condensed">
+   <link rel="stylesheet" href="./css/bootstrap.min.css">
+   <title>Frontend Mentor | Rock, Paper, Scissors</title>
+
+   <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+   <style>
+      
+      body {
+         background: radial-gradient(circle, hsl(214, 47%, 23%), hsl(237, 49%, 15%));
+         /* font-family Barlow Semi Condensed; */
+         min-height: 100vh;
+         margin: 0px;
+         padding: 0px;
+      }
+
+      .container {
+         max-width: 1366px;
+         margin: auto;
+         position: relative;
+         overflow: hidden;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: space-around;
+         min-height: calc(100vh - 32px);  /* - footer-height*/
+      }
+
+      div.site-data {
+         max-width: 700px;
+         display: flex;
+         justify-content: space-between;
+         padding: 20px;
+         border: 5px solid #596882;
+         border-radius: 20px;
+         margin: auto;
+         width: 100%;
+      }
+
+      div.site-data .brand img {
+         /* max-width: 135px; */
+      }
+
+      div.site-data .score {
+         background: #fafafa;
+         width: 130px;
+         height: 99px;
+         text-align: center;
+         border-radius: 8px;
+         /* 99 - (title-height + result-height ) = 99 -80 = 19 /2 =  */
+      }
+
+      div.site-data .score .title {
+         color: #6979bb;
+         font-size: 16px;
+         letter-spacing: 3px;
+         padding-top: 10px;
+      }
+
+      div.site-data .score .result {
+         color: #596882;
+         font-size: 50px;
+         font-weight: 700;
+         line-height: 50px;
+      }
+
+      div.rules{
+         position: absolute;
+         text-align: right;
+         bottom: 0;
+         right: 10px;
+         /* margin-top: 20px; */
+         width: 100%;
+         margin-bottom: 20px;
+      }
+      button.rules {
+         border: 2px solid #EEE;
+         padding: 8px 40px;
+         font-size: 18px;
+         color: #fafafa;
+         border-radius: 8px;
+         cursor: pointer;
+         background: none;
+      }
+      @media(max-width: 375px){
+         div.rules{
+            position: relative;
+         }
+      }
+      div.work-space{
+         width: 100%;
+      }
+      div.bg-triangle{
+         background-image: url(./images/bg-triangle.svg);
+         width: 305px;
+         height: 277px;
+         margin: auto;
+         margin-top: 100px;
+         margin-bottom: 100px;
+         background-repeat: no-repeat;
+         background-position: 50% 50%;
+         background-size: cover;
+         position: relative;
+      }
+      div.bg-triangle .image , div.match .image{
+         background: #e0e0e0;
+         width: 130px;
+         height: 130px;
+         border-radius: 50%;
+         text-align: center;
+         line-height: 130px;
+      }
+      div.bg-triangle .image img , div.match .image img{
+         width: 75px;
+      }
+      @media(max-width: 375px){
+         div.bg-triangle{
+            width: 210px;
+            height: 227px;   /* (250 / 305) * 277 */
+         }
+         div.bg-triangle{
+            margin-top: 75px;
+            margin-bottom: 75px;
+         }
+         div.bg-triangle .image , div.match .image{
+         background: #e0e0e0;
+         width: 90px;
+         height: 90px;
+         border-radius: 50%;
+         text-align: center;
+         line-height: 90px;
+         
+         }
+         div.bg-triangle .image img , div.match .image img{
+            width: 55px;
+         }
+      }
+      div.bg-triangle .weapon , div.match .weapon{
+         border-radius: 50%;
+         cursor: pointer;
+      }
+      div.bg-triangle .weapon{
+         position: absolute;
+      }
+      div.bg-triangle .rock{
+         top: -50px;
+         right: -50px;
+      }
+      div.bg-triangle .paper{
+         top: -50px;
+         left: -50px;
+      }
+      div.bg-triangle .scissors{
+         bottom: -50px;
+         left: 87.5px; /* parent width/2 - scissors width/2 = 152.5 - 65*/
+      }
+      @media(max-width: 375px){
+         div.bg-triangle .scissors{
+            left: 45px; /* parent width/2 - scissors width/2 = 105 - 60*/
+         }
+      }
+      div.bg-triangle .rock , div.match .rock{
+         border: 15px solid #dc3c59;
+      }
+      div.bg-triangle .paper , div.match .paper{
+         border: 15px solid #eba41a;
+      }
+      div.bg-triangle .scissors , div.match .scissors{
+         border: 15px solid #5471f7;
+      }
+
+      div.match{
+         /* display: flex; */
+         color: #fafafa;
+         text-align: center;
+         justify-content: space-around;
+         max-width: 700px;
+         margin: auto;
+         margin-top: 115px;
+         margin-bottom: 115px;
+         display: none;
+      }
+      div.match .header{
+         font-size: 25px;
+         margin-bottom: 20px;
+      }
+
+      div.match .weapon{
+         display: inline-block;
+         position: relative;
+      }
+
+      div.match .new-game{
+         /* display: flex; */
+         flex-direction: column;
+         justify-content: center;
+         display: none;
+      }
+
+      @media(max-width: 425px){
+         div.match{
+            flex-wrap: wrap;
+         }
+         div.match .new-game{
+            order: 3;
+            margin-top: 65px;
+         }
+         div.match .header{
+            font-size: 18px;
+         }
+      }
+
+      div.match .status{
+         font-size: 39px;
+         font-weight: 600;
+      }
+
+      div.match button.again{
+         background: #fafafa;
+         border: none;
+         padding: 4px 32px;
+         font-size: 20px;
+         border-radius: 12px;
+         color: #787878;
+      }
+
+      div.match .winner{
+         width: 300%;
+         height: 300%;
+         position: absolute;
+         top: -100%;
+         left: -100%;
+         border-radius: 100%;
+         /* background: radial-gradient(circle, transparent ,rgba(0,0,0,0.4) , blue); */
+         background: radial-gradient(circle,
+            transparent ,transparent , transparent ,
+            transparent , transparent ,rgba(162, 255, 229, 0.1), 
+            transparent, rgba(162, 255, 229, 0.1) , transparent, 
+            rgba(162, 255, 229, 0.1) , transparent, rgba(162, 255, 229, 0.1) , 
+            transparent, rgba(162, 255, 229, 0.1) );
+      }
+
+      .attribution {
+         font-size: 11px;
+         text-align: center;
+         color: #FFF;
+      }
+
+      .attribution a {
+         color: hsl(228, 45%, 44%);
+      }
+
+      #rules-modal{
+         position: fixed;
+         top: 0;
+         left: 0;
+         right: 0;
+         bottom: 0;
+         display: none;
+         justify-content: center;
+         align-items: center;
+         background: rgba(0, 0, 0, 0.7);
+      }
+      #rules-modal .content{
+         background: #fafafa;
+         max-width: 500px;
+         padding: 20px;
+         border-radius: 20px;
+      }
+      @media(max-width: 375px){
+         #rules-modal .content{
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+         }
+      }
+      #rules-modal .content .header{
+         display: flex;
+         justify-content: space-between;
+         padding: 10px 0;
+         font-size: 30px;
+         line-height: 50px;
+      }
+      #rules-modal .content .header .close{
+         cursor: pointer;
+         line-height: 50px;
+      }
+
+      #rules-modal .content .body .image{
+         text-align: center;
+      }
+   </style>
+</head>
+
+<body>
+   <div class="container">
+      <div class="site-data">
+         <div class="brand">
+            <img src="./images/logo.svg" alt="site logo">
+         </div>
+         <div class="score">
+            <div class="title">score</div>
+            <div class="result">0</div>
+         </div>
+      </div>
+      <div class="work-space">
+         <div class="bg-triangle">
+            <div class="rock weapon" data-type="rock" data-src="./images/icon-rock.svg">
+               <div class="image">
+                  <img src="./images/icon-rock.svg" alt="">
+               </div>
+            </div>
+            <div class="scissors weapon" data-type="scissors" data-src="./images/icon-scissors.svg">
+               <div class="image">
+                  <img src="./images/icon-scissors.svg" alt="">
+               </div>
+            </div>
+            <div class="paper weapon" data-type="paper" data-src="./images/icon-paper.svg">
+               <div class="image">
+                  <img src="./images/icon-paper.svg" alt="">
+               </div>
+            </div>
+         </div>
+         <!-- Mathc -->
+         <div class="match">
+            <div class="user">
+               <div class="header">You Picked</div>
+               <div class="rock weapon" data-type="rock" data-src="./images/icon-rock.svg">
+                  <div class="image">
+                     <img src="./images/icon-rock.svg" alt="">
+                  </div>
+               </div>
+            </div>
+            <div class="new-game">
+               <div class="status"></div>
+               <button class="again">Play Again</button>
+            </div>
+            <div class="computer">
+               <div class="header">The House Picked</div>
+               <div class="scissors weapon" data-type="scissors" data-src="./images/icon-scissors.svg">
+                  <!-- <div class="winner"></div> -->
+                  <div class="image">
+                     <img src="./images/icon-scissors.svg" alt="">
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="rules">
+         <button class="rules rules-modal-switch" data-command="open">Rules</button>
+      </div>
+   </div>
+   <div class="attribution">
+      Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>.
+      Coded by <a href="#">Ahmad Iyad Abu-hazaa</a>.
+   </div>
+
+   <!-- Modal Rules -->
+
+   <div id="rules-modal">
+      <div class="content">
+         <div class="header">
+            <div class="title">Rules</div>
+            <div class="close rules-modal-switch" data-command="close">
+               <img src="./images/icon-close.svg" alt="close">
+            </div>
+         </div>
+         <div class="body">
+            <div class="image">
+               <img src="./images/image-rules.svg" alt="Game Rules">
+            </div>
+         </div>
+      </div>
+   </div>
+<script src="./js/jquery.js"></script>
+<script>
+   $(function(){
+      $(".rules-modal-switch").on("click" , function(){
+         let command = $(this).data("command");
+         if(command == 'open'){
+            $("#rules-modal").fadeIn(200);
+            $("#rules-modal").css("display" , "flex");
+         }else{
+            $("#rules-modal").fadeOut(200);
+         }
+      });
+
+         weapons =  [{type:"paper" , src:"./images/icon-paper.svg"} ,
+                     {type:"rock" , src:"./images/icon-rock.svg"} ,
+                     {type:"scissors" , src:"./images/icon-scissors.svg"}];
+
+      $(".bg-triangle .weapon").on("click" , function(){
+         let userWeapon = $(this).data("type");
+         let src    = $(this).data("src");
+         $(".match .user .weapon img").attr("src" , src);
+         $("div.bg-triangle").hide();
+         $("div.match").show();
+         $("div.match").css("display" , "flex");
+         randomWeapon(userWeapon);
+      }); 
+
+      $(".match button.again").on("click" , function(){
+         $(".match").hide();
+         $(".match .new-game").hide();
+         $(".bg-triangle").show();
+         $(".bg-triangle").css("display" , "float");
+         $(".work-space .winner").remove();
+      });    
+   });
+
+   function randomWeapon(userWeapon){
+      let loopStart = 0;
+      var weaponOrder = 0;
+      let loopEnd = Math.floor( Math.random() * weapons.length ) + 10;  //random number start from 10 to change computerWeapon every new game
+      console.log(loopEnd);
+      let x = setInterval(() => {
+         
+         if(weaponOrder == weapons.length){  //make sure weaponOrder exists as a key in weapons array
+            weaponOrder = 0;
+         }
+
+         let computerWeapon = weapons[weaponOrder];
+         if(loopStart == loopEnd){
+            clearInterval(x);
+            checkWinner(userWeapon , computerWeapon.type);
+         }
+         $(".match .computer .weapon").attr("data-type", computerWeapon.type);
+         $(".match .computer .weapon").attr("data-src", computerWeapon.src);
+         $(".match .computer .weapon img").attr("src" , computerWeapon.src);
+         loopStart++;
+         weaponOrder++;
+      }, 100);
+   }
+
+   let rules = {
+      rock    :{rock:"draw"   , paper:"loser" , scissors:"winner"},  //if user select rock and computer select [ row then draw , paper then lose , scissors then win]
+      paper   :{rock:"winner" , paper:"draw"  , scissors:"loser" },
+      scissors:{rock:"loser"  , paper:"winner", scissors:"draw"  },
+   }
+   function checkWinner(userWeapon , computerWeapon){
+      let result = rules[userWeapon][computerWeapon];
+      switch (result) {
+         case "draw":
+               $(".match .new-game .status").text("Draw");
+            break;
+         case "winner":
+               $(".match .new-game .status").text("You Win");
+               $(".match .user .weapon").append("<div class='winner'></div>");
+               $(".score .result").text( parseInt($(".score .result").text()) + 1 );
+            break;
+         case "loser":
+               $(".match .new-game .status").text("You Lose");
+               $(".match .computer .weapon").append("<div class='winner'></div>");
+               let result = parseInt($(".score .result").text()) - 1 ;
+               $(".score .result").text( result >= 0  ? result :  0 );    
+            break;
+         default:
+            break;
+      }
+      $(".match .new-game").show();
+      $(".match .new-game").css("display" , "flex");
+   }
+</script>
+</body>
+
+</html>
